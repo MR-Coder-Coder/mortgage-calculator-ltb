@@ -17,6 +17,7 @@
     }
   ],
   "hosting": {
+    "site": "mortgage-calc-ltb",
     "public": "build",
     "ignore": [
       "firebase.json",
