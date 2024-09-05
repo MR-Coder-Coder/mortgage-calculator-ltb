@@ -1,19 +1,86 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+// functions/index.js
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+exports.calculateMortgage = functions.https.onCall((data, context) => {
+  const { personalIncome, companyIncome, loanAmount, interestRate } = data;
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+  // Fetch percentages and reliefs from Firestore (or your preferred DB)
+  const db = admin.firestore();
+  return db.collection('taxData')
+    .get()
+    .then((snapshot) => {
+      const taxData = {};
+      snapshot.forEach((doc) => (taxData[doc.id] = doc.data()));
+
+      // Your calculation logic here
+      const personalTax = calculatePersonalTax(personalIncome, loanAmount, interestRate, taxData);
+      const companyTax = calculateCompanyTax(companyIncome, loanAmount, interestRate, taxData);
+
+      const betterOption = personalTax < companyTax ? 'personal' : 'company';
+
+      return {
+        message: `It's better to take the mortgage in your ${betterOption} name.`,
+        personalTax,
+        companyTax,
+      };
+    })
+    .catch((error) => {
+      console.error('Error fetching tax data:', error);
+      throw new functions.https.HttpsError('internal', 'Error fetching tax data.');
+    });
+});
+
+function calculatePersonalTax(personalIncome, loanAmount, interestRate, taxData) {
+  // Implement personal tax calculation using taxData
+  return personalIncome * loanAmount * interestRate; // Simplified for illustration
+}
+
+function calculateCompanyTax(companyIncome, loanAmount, interestRate, taxData) {
+  // Implement company tax calculation using taxData
+  return companyIncome * loanAmount * interestRate; // Simplified for illustration
+}
+
+// New setupTaxData function
+exports.setupTaxData = functions.https.onCall(async (data, context) => {
+    const db = admin.firestore();
+  
+    const taxData = [
+      {
+        id: 'personalTax',
+        data: {
+          incomeTaxRate: 20,
+          capitalGainsTaxRate: 18,
+          personalTaxRelief: 12500,
+        },
+      },
+      {
+        id: 'corporateTax',
+        data: {
+          corporateTaxRate: 19,
+          capitalGainsTaxRate: 19,
+          corporateTaxRelief: 0,
+        },
+      },
+      {
+        id: 'mortgageData',
+        data: {
+          interestDeductibleRate: 100,
+          personalInterestDeduction: 50,
+        },
+      },
+    ];
+  
+    try {
+      for (const doc of taxData) {
+        await db.collection('taxData').doc(doc.id).set(doc.data);
+      }
+      return { message: 'Tax data setup completed successfully.' };
+    } catch (error) {
+      console.error('Error writing tax data: ', error);
+      throw new functions.https.HttpsError('internal', 'Error setting up tax data.');
+    }
+  });
+
