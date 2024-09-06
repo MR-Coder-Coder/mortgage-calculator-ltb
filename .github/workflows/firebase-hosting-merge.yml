@@ -17,8 +17,8 @@ jobs:
           npm run build
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
-      - name: Login to Firebase
-        run: firebase login
+      - name: Generate Firebase Login Token
+        run: firebase login:ci --no-interactive
       - name: Deploy Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
