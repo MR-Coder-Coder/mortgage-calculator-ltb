@@ -12,7 +12,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        run: npm install
+        run: | 
+          npm install
+          npm install -g firebase-tools
       - run: |
           unset CI
           npm run build
@@ -24,8 +26,4 @@ jobs:
           projectId: mortgage-calculator-f9283
       - name: Deploy Firestore and Cloud Functions
         run: |
-          # Deploy Firestore
-          firebase deploy --only firestore
-          
-          # Deploy Cloud Functions
-          firebase deploy --only functions
+          firebase deploy --only firestore,functions
