@@ -23,3 +23,11 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MORTGAGE_CALCULATOR_F9283 }}
           projectId: mortgage-calculator-f9283
+      - name: Deploy Firestore and Cloud Functions
+        run: |
+          # Deploy Firestore
+          firebase deploy --only firestore
+          
+          # Deploy Cloud Functions
+          firebase deploy --only functions
+
