@@ -1,61 +1,106 @@
-// src/components/SetupTaxData.js
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { app } from '../firebase'; // Ensure your Firebase app is correctly initialized
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 
 const SetupTaxData = () => {
+  const [taxData, setTaxData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const [taxData, setTaxData] = useState([]); // Initialize taxData as an empty array
-  const [loading, setLoading] = useState(false); // Loading state to manage button state
-  const navigate = useNavigate(); // Initialize the navigate function
+  const [editData, setEditData] = useState({});
+  const navigate = useNavigate();
 
-  const handleSetupTaxData = async () => {
-    const functions = getFunctions(app);
-    const setupTaxData = httpsCallable(functions, 'setupTaxData');
+  const functions = getFunctions(app);
 
-    setLoading(true); // Set loading state to true when starting
-
+  // Fetch current tax data from Firestore
+  const fetchTaxData = async () => {
+    const getTaxData = httpsCallable(functions, 'getTaxData');
+    setLoading(true);
     try {
-      const response = await setupTaxData(); // Call the cloud function
-      setMessage(response.data.message); // Set success message from response
-      setTaxData(response.data.taxData || []); // Set the returned tax data or fallback to empty array
-      setError(''); // Clear any previous error messages
+      const response = await getTaxData();
+      setTaxData(response.data.taxData || []);
     } catch (error) {
-      console.error('Error calling setupTaxData function:', error);
-      setMessage(''); // Clear any previous success messages
-      setError(error.message || 'Failed to set up tax data. Please try again.'); // Display the error message
+      setError('Failed to fetch tax data');
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchTaxData();
+  }, []);
+
+  // Update the tax data in Firestore
+  const handleUpdateTaxData = async (id) => {
+    const updateTaxData = httpsCallable(functions, 'updateTaxData');
+    setLoading(true);
+    try {
+      await updateTaxData({ id, updatedData: editData[id] });
+      setMessage(`Tax data for ${id} updated successfully.`);
+      setEditData({}); // Clear input fields after update
+      fetchTaxData(); // Refresh data after update
+    } catch (error) {
+      setError(`Failed to update tax data for ${id}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (id, field, value) => {
+    setEditData((prevData) => ({
+      ...prevData,
+      [id]: {
+        ...prevData[id],
+        [field]: value,
+      },
+    }));
   };
 
   return (
     <div className="setup-tax-data">
       <h2>Setup Tax Data</h2>
-      <button onClick={handleSetupTaxData} disabled={loading}>
-        {loading ? 'Initializing...' : 'Initialize Tax Data'}
-      </button>
-      {message && <p>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Display the tax data entries */}
+      {message && <p className="success-message">{message}</p>}
+      {error && <p className="error-message">{error}</p>}
+
+      {loading && <p>Loading...</p>}
+
+      {/* Display and Edit Tax Data */}
       {taxData.length > 0 && (
         <div className="tax-data-list">
           <h3>Tax Data Entries</h3>
-          <ul>
-            {taxData.map((entry) => (
-              <li key={entry.id}>
-                <strong>{entry.id}</strong>: {JSON.stringify(entry.data)}
-              </li>
-            ))}
-          </ul>
+          {taxData.map((entry) => (
+            <div key={entry.id} className="tax-entry">
+              <h4>{entry.id}</h4>
+              {Object.keys(entry.data).map((field) => (
+                <div key={field}>
+                  <label>
+                    {field}:{' '}
+                    <input
+                      type="number"
+                      value={editData[entry.id]?.[field] || entry.data[field]}
+                      onChange={(e) =>
+                        handleInputChange(entry.id, field, e.target.value)
+                      }
+                    />
+                  </label>
+                </div>
+              ))}
+              <button
+                onClick={() => handleUpdateTaxData(entry.id)}
+                disabled={loading}
+              >
+                {loading ? 'Updating...' : `Update ${entry.id}`}
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      <button className="nav-button" onClick={() => navigate('/calculator')}>Go to Mortgage Calculator</button>
+      <button className="nav-button" onClick={() => navigate('/calculator')}>
+        Go to Mortgage Calculator
+      </button>
     </div>
   );
 };

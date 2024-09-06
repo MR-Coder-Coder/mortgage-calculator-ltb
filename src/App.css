@@ -135,20 +135,83 @@ input:focus {
   border-radius: 4px;
 }
 
-/* Styles for the Setup Tax Data Component */
+/* Updated Setup Tax Data Styles */
 .setup-tax-data {
   max-width: 600px;
   margin: 20px auto;
-  padding: 20px;
+  padding: 30px;
   background-color: #ffffff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 10px;
+  text-align: left;
 }
 
 .setup-tax-data h2 {
+  font-size: 24px;
+  color: #333;
   margin-bottom: 20px;
+}
+
+.tax-data-list {
+  margin-top: 20px;
+}
+
+.tax-data-list h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.tax-data-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.tax-data-list li {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.tax-entry {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.success-message {
+  color: green;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+
+.tax-entry h4 {
+  margin-bottom: 10px;
   color: #333;
 }
+
+.tax-entry label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.tax-entry input {
+  padding: 5px;
+  margin-left: 10px;
+  width: 100px;
+}
+
 
 /* Navigation Buttons */
 .nav-button {
