@@ -21,12 +21,12 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MORTGAGE_CALCULATOR_F9283 }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MORTGAGE_CALCULATOR_F9283_NEW }}
           projectId: mortgage-calculator-f9283
       - name: Deploy to Firestore 
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only firestore
+          args: deploy --only firestore,functions
         env:
-          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MORTGAGE_CALCULATOR_F9283 }}
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MORTGAGE_CALCULATOR_F9283_NEW }}
           
