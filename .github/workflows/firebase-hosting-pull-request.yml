@@ -17,6 +17,10 @@ jobs:
         run: | 
           npm install
           npm install -g firebase-tools
+      - name: Authenticate Firebase
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_MORTGAGE_CALCULATOR_F9283 }}" > "${HOME}/firebase-key.json"
+          firebase use --add mortgage-calculator-f9283 --token "$(firebase login:ci --token $(cat ${HOME}/firebase-key.json))"
       - run: |
           unset CI 
           npm run build
@@ -27,9 +31,4 @@ jobs:
           projectId: mortgage-calculator-f9283
       - name: Deploy Firestore and Cloud Functions
         run: |
-          # Deploy Firestore
-          firebase deploy --only firestore
-          
-          # Deploy Cloud Functions
-          firebase deploy --only functions
-
+          firebase deploy --only firestore,functions
