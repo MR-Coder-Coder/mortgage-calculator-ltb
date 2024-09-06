@@ -30,5 +30,7 @@ jobs:
           channelId: live
           projectId: mortgage-calculator-f9283
       - name: Deploy Firestore and Cloud Functions
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: "${HOME}/firebase-key.json"
         run: |
           firebase deploy --only firestore,functions
