@@ -234,3 +234,8 @@ input:focus {
   background-color: #b0b0b0;
   cursor: not-allowed;
 }
+
+.login-logo {
+  width: 250px; /* Adjust the size as needed */
+  margin-bottom: 20px; /* Add space between the logo and the form */
+}

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import logo from '../assets/logo.png'; // Import your logo image
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -24,6 +25,7 @@ const Login = () => {
 
   return (
     <div className="login-form">
+      <img src={logo} alt="Logo" className="login-logo" /> {/* Display the logo */}
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <input
