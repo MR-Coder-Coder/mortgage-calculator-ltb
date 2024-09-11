@@ -239,3 +239,39 @@ input:focus {
   width: 250px; /* Adjust the size as needed */
   margin-bottom: 20px; /* Add space between the logo and the form */
 }
+
+.google-sign-in-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #444;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  margin: 10px auto;
+}
+
+.google-sign-in-button:hover {
+  background-color: #f5f5f5;
+}
+
+.google-sign-in-button:active {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.google-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+span {
+  font-weight: bold;
+  color: #555;
+}
