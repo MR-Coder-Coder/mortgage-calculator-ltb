@@ -13,6 +13,20 @@ const SetupTaxData = () => {
 
   const functions = getFunctions(app);
 
+  // Function to set up tax data in Firestore
+  const setupInitialTaxData = async () => {
+    const setupTaxData = httpsCallable(functions, 'setupTaxData');
+    setLoading(true);
+    try {
+      const response = await setupTaxData();
+      setMessage(response.data.message);
+    } catch (error) {
+      setError('Failed to set up tax data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch current tax data from Firestore
   const fetchTaxData = async () => {
     const getTaxData = httpsCallable(functions, 'getTaxData');
@@ -27,8 +41,14 @@ const SetupTaxData = () => {
     }
   };
 
+  // Fetch tax data and set up initial tax data if needed
   useEffect(() => {
-    fetchTaxData();
+    const initializeData = async () => {
+      await setupInitialTaxData(); // Setup the initial data
+      await fetchTaxData(); // Fetch the data after setup
+    };
+
+    initializeData();
   }, []);
 
   // Update the tax data in Firestore

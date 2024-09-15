@@ -34,6 +34,15 @@ exports.setupTaxData = functions.https.onCall(async (data, context) => {
           personalInterestDeduction: 50,
         },
       },
+      {
+        id: 'pprData', // New entry for PPR logic
+        data: {
+          propertyValue: 300000, // example values, can be updated
+          growthInValue: 50000,
+          yearsUnderPPR: 36, // Months lived under PPR
+          ownershipDurationMonths: 60, // Total months of ownership
+        },
+      },
     ];
   
     try {
@@ -57,4 +66,4 @@ exports.setupTaxData = functions.https.onCall(async (data, context) => {
       console.error('Error writing or fetching tax data:', error);
       throw new functions.https.HttpsError('internal', 'Error setting up or fetching tax data.');
     }
-  });
+});

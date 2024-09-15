@@ -1,5 +1,3 @@
-// src/components/MortgageCalculator.js
-
 import React, { useState } from 'react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { app } from '../firebase'; // Make sure this is your Firebase app initialization file
@@ -33,7 +31,7 @@ const MortgageCalculator = () => {
 
   return (
     <div className="mortgage-calculator">
-      <h2>Mortgage Calculator</h2>
+      <h2>Mortgage Tax Calculator</h2>
       <input
         type="number"
         placeholder="Personal Income"
@@ -65,10 +63,14 @@ const MortgageCalculator = () => {
           <h3>Results:</h3>
           <p>{results.message}</p>
           <div className="results-grid">
-            <div className="grid-header">Personal</div>
-            <div className="grid-header">Company</div>
+            <div className="grid-header">Personal Tax</div>
+            <div className="grid-header">Company Tax</div>
             <div>{results.personalTax}</div>
             <div>{results.companyTax}</div>
+          </div>
+          <div className="results-grid">
+          <div className="grid-header">PPR Value</div>
+          <div>{results.pprValue}</div> {/* Display the PPR value */}
           </div>
         </div>
       )}
